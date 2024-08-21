@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+option go_package = "genproto/dish";
+
+package dish;
+
+service Dish {
+    rpc Add (NewDish) returns (NewDishResp);
+    rpc Read (ID) returns (DishInfo);
+    rpc Update (NewData) returns (UpdatedData);
+    rpc Delete (ID) returns (Void);
+    rpc Fetch (Pagination) returns (Dishes);
+}
+
+message NewDish {
+    string kitchen_id = 1;
+    string name = 2;
+    string description = 3;
+    float price = 4;
+    string category = 5;
+    repeated string ingredients = 6;
+    bool available = 7;
+}
+
+message NewDishResp {
+    string id = 1;
+    string kitchen_id = 2;
+    string name = 3;
+    string description = 4;
+    float price = 5;
+    string category = 6;
+    repeated string ingredients = 7;
+    bool available = 8;
+    string created_at = 9;
+}
+
+message ID {
+    string id = 1;
+}
+
+message DishInfo {
+    string id = 1;
+    string kitchen_id = 2;
+    string name = 3;
+    string description = 4;
+    float price = 5;
+    string category = 6;
+    repeated string ingredients = 7;
+    repeated string allergens = 8;
+    NutritionalInfo nutrition_info = 9;
+    repeated string dietary_info = 10;
+    bool available = 11;
+    string created_at = 12;
+    string updated_at = 13;
+}
+
+message NewData {
+    string id = 1;
+    string name = 2;
+    float price = 3;
+    bool available = 4;
+}
+
+message NewDataNoID {
+    string name = 1;
+    float price = 2;
+    bool available = 3;
+}
+
+message UpdatedData {
+    string id = 1;
+    string kitchen_id = 2;
+    string name = 3;
+    string description = 4;
+    float price = 5;
+    string category = 6;
+    repeated string ingredients = 7;
+    bool available = 8;
+    string updated_at = 9;
+}
+
+message Void{}
+
+message Pagination {
+    int32 limit = 1;
+    int32 offset = 2;
+}
+
+message DishDetails {
+    string id = 1;
+    string name = 2;
+    float price = 3;
+    string category = 4;
+    bool available = 5;
+}
+
+message Dishes {
+    repeated DishDetails dishes = 1;
+    int32 total = 2;
+    int32 page = 3;
+    int32 limit = 4;
+}
+
+message NutritionalInfo {
+    int32 calories = 1;
+    int32 protein = 2;
+    int32 fat = 3;
+    int32 carbs = 4;
+}

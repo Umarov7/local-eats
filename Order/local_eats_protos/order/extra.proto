@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+option go_package = "genproto/extra";
+
+package extra;
+
+service Extra {
+    rpc GetStatistics (Period) returns (Statistics);
+    rpc TrackActivity (Period) returns (Activity);
+    rpc SetWorkingHours (WorkingHours) returns (WorkingHoursResp);
+    rpc GetNutrition (ID) returns (NutritionalInfo);
+}
+
+message Period {
+    string id = 1;
+    string start_date = 2;
+    string end_date = 3;
+}
+
+message Dish {
+    string id = 1;
+    string name = 2;
+    int32 orders_count = 3;
+    float revenue = 4;
+}
+
+message DishNoID {
+    string name = 1;
+    int32 orders_count = 2;
+    float revenue = 3;
+}
+
+message Statistics {
+    int32 total_orders = 1;
+    float total_revenue = 2;
+    float average_rating = 3;
+    repeated Dish top_dishes = 4;
+}
+
+message Cuisine {
+    string cuisine_type = 1;
+    int32 orders_count = 2;
+}
+
+message Kitchen {
+    string id = 1;
+    string name = 2;
+    int32 orders_count = 3;
+}
+
+message KitchenNoID {
+    string name = 1;
+    int32 orders_count = 2;
+}
+
+message Activity {
+    int32 total_orders = 1;
+    float total_spent = 2;
+    repeated Cuisine favorite_cuisines = 3;
+    repeated Kitchen favorite_kitchens = 4;
+}
+
+message DaySchedule {
+    string open = 1;
+    string close = 2;
+}
+
+message WorkingHours {
+    string kitchen_id = 1;
+    map<string, DaySchedule> schedule = 2;
+}
+
+message WorkingHoursNoID {
+    map<string, DaySchedule> schedule = 1;
+}
+
+message WorkingHoursResp {
+    string kitchen_id = 1;
+    map<string, DaySchedule> schedule = 2;
+    string updated_at = 3;
+}
+
+message ID {
+    string id = 1;
+}
+
+message NutritionalInfo {
+    repeated string allergens = 1;
+    int32 calories = 2;
+    int32 protein = 3;
+    int32 fat = 4;
+    int32 carbs = 5;
+    repeated string dietary_info = 6;
+}

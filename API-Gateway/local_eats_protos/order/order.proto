@@ -1,0 +1,119 @@
+syntax = "proto3";
+
+option go_package = "genproto/order";
+
+package order;
+
+service Order {
+    rpc MakeOrder (NewOrder) returns (NewOrderResp);
+    rpc ChangeStatus (Status) returns (UpdatedOrder);
+    rpc GetOrderByID (ID) returns (OrderInfo);
+    rpc FetchOrdersForCustomer (Pagination) returns (OrdersCustomer);
+    rpc FetchOrdersForKitchen (Filter) returns (OrdersKitchen);
+}
+
+message Item {
+    string dish_id = 1;
+    int32 quantity = 2;
+}
+
+message NewOrder {
+    string user_id = 1;
+    string kitchen_id = 2;
+    repeated Item items = 3;
+    string delivery_address = 4;
+    string delivery_time = 5;
+}
+
+message NewOrderResp {
+    string id = 1;
+    string user_id = 2;
+    string kitchen_id = 3;
+    repeated Item items = 4;
+    float total_amount = 5;
+    string status = 6;
+    string delivery_address = 7;
+    string delivery_time = 8;
+    string created_at = 9;
+}
+
+message Status {
+    string id = 1;
+    string status = 2;
+}
+
+message StatusNoID {
+    string status = 1;
+}
+
+message UpdatedOrder {
+    string id = 1;
+    string status = 2;
+    string updated_at = 3;
+}
+
+message ID {
+    string id = 1;
+}
+
+message ItemDetails {
+    string dish_id = 1;
+    string name = 2;
+    float price = 3;
+    int32 quantity = 4;
+}
+
+message OrderInfo {
+    string id = 1;
+    string user_id = 2;
+    string kitchen_id = 3;
+    string kitchen_name = 4;
+    repeated ItemDetails items = 5;
+    float total_amount = 6;
+    string status = 7;
+    string delivery_address = 8;
+    string delivery_time = 9;
+    string created_at = 10;
+    string updated_at = 11;
+}
+
+message Pagination {
+    int32 limit = 1;
+    int32 offset = 2;
+}
+
+message OrderCustomer {
+    string id = 1;
+    string kitchen_name = 2;
+    float total_amount = 3;
+    string status = 4;
+    string delivery_time = 5;
+}
+
+message OrdersCustomer {
+    repeated OrderCustomer orders = 1;
+    int32 total = 2;
+    int32 page = 3;
+    int32 limit = 4;
+}
+
+message Filter {
+    string kitchen_id = 1;
+    string status = 2;
+    Pagination pagination = 3;
+}
+
+message OrderKitchen {
+    string id = 1;
+    string user_name = 2;
+    float total_amount = 3;
+    string status = 4;
+    string delivery_time = 5;
+}
+
+message OrdersKitchen {
+    repeated OrderKitchen orders = 1;
+    int32 total = 2;
+    int32 page = 3;
+    int32 limit = 4;
+}

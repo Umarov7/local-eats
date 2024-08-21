@@ -1,0 +1,122 @@
+services:
+  postgres-db1:
+    image: postgres:latest
+    container_name: postgres1
+    environment:
+      - POSTGRES_DB=local_eats_auth
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+    volumes:
+      - postgres-db1:/data/postgres
+    ports:
+      - "5433:5432"
+    networks:
+      - local-eats
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s
+  
+  postgres-db2:
+    image: postgres:latest
+    container_name: postgres2
+    environment:
+      - POSTGRES_DB=local_eats_order
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+    volumes:
+      - postgres-db2:/data/postgres
+    ports:
+      - "5434:5432"
+    networks:
+      - local-eats
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s
+  
+  migrate1:
+    image: migrate/migrate
+    command: [
+      "-path", "/migrations",
+      "-database", "postgres://postgres:root@postgres1:5432/local_eats_auth?sslmode=disable",
+      "up"
+    ]
+    volumes:
+      - ./Auth/migrations:/migrations
+    depends_on:
+      - postgres-db1
+    networks:
+      - local-eats
+  
+  migrate2:
+    image: migrate/migrate
+    command: [
+      "-path", "/migrations",
+      "-database", "postgres://postgres:root@postgres2:5432/local_eats_order?sslmode=disable",
+      "up"
+    ]
+    volumes:
+      - ./Order/migrations:/migrations
+    depends_on:
+      - postgres-db2
+    networks:
+      - local-eats
+  
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6378:6379"
+    networks:
+      - local-eats
+  
+  auth-service:
+    build: ./Auth
+    container_name: auth
+    depends_on:
+      - migrate1
+      - postgres-db1
+      - redis
+    ports:
+      - "8081:8081"
+      - "50051:50051"
+    networks:
+      - local-eats
+  
+  order-service:
+    build: ./Order
+    container_name: order
+    depends_on:
+      - migrate2
+      - postgres-db2
+      - redis
+    ports:
+      - "50052:50052"
+    networks:
+      - local-eats
+  
+  api-gateway:
+    build: ./API-Gateway
+    container_name: api-gateway
+    depends_on:
+      - auth-service
+      - order-service
+    ports:
+      - "8080:8080"
+    networks:
+      - local-eats
+  
+networks:
+  local-eats:
+    driver: bridge
+
+volumes:
+  postgres-db1:
+  postgres-db2:

@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+option go_package = "genproto/payment";
+
+package payment;
+
+service Payment {
+    rpc MakePayment (NewPayment) returns (NewPaymentResp);
+    rpc GetPayment (ID) returns (PaymentDetails);
+}
+
+message NewPayment {
+    string order_id = 1;
+    string payment_method = 2;
+    string card_number = 3;
+    string expiry_date = 4;
+    string cvv = 5;
+}
+
+message NewPaymentResp {
+    string id = 1;
+    string order_id = 2;
+    float amount = 3;
+    string status = 4;
+    string transaction_id = 5;
+    string created_at = 6;
+}
+
+message ID {
+    string id = 1;
+}
+
+message PaymentDetails {
+    string id = 1;
+    string order_id = 2;
+    float amount = 3;
+    string status = 4;
+    string method = 5;
+    string card_number = 6;
+    string expiry_date = 7;
+    string cvv = 8;
+    string transaction_id = 9;
+    string created_at = 10;
+}
