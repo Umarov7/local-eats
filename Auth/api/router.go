@@ -3,6 +3,7 @@ package api
 import (
 	_ "auth-service/api/docs"
 	"auth-service/api/handler"
+	"auth-service/api/middleware"
 	"auth-service/genproto/auth"
 
 	"github.com/gin-gonic/gin"
@@ -13,12 +14,12 @@ import (
 // @title Authorazation
 // @version 1.0
 // @description Authorazation API
-// @host localhost:8081
 // BasePath: /
 func Router(client auth.AuthClient) *gin.Engine {
 	h := handler.NewHandler(client)
 
 	r := gin.Default()
+	r.Use(middleware.CORSMiddleware())
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	auth := r.Group("/auth")

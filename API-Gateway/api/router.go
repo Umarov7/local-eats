@@ -15,7 +15,6 @@ import (
 // @title Local Eats
 // @version 1.0
 // @description API Gateway of Local Eats
-// @host localhost:8080
 // @BasePath /local-eats
 // @schemes http
 // @securityDefinitions.apikey ApiKeyAuth
@@ -25,6 +24,7 @@ func NewRouter(cfg *config.Config) *gin.Engine {
 	h := handler.NewHandler(cfg)
 
 	router := gin.Default()
+	router.Use(middleware.CORSMiddleware())
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	api := router.Group("/local-eats")

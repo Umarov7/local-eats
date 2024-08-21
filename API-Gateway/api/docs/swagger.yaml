@@ -645,7 +645,6 @@ definitions:
     type: object
   user.Void:
     type: object
-host: localhost:8080
 info:
   contact: {}
   description: API Gateway of Local Eats
